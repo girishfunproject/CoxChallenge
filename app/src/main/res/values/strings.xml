@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">GirishDemo</string>
+    <string name="dataSetId_error_msg">No internet</string>
+</resources>
