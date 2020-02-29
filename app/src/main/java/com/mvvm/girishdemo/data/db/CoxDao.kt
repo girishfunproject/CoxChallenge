@@ -27,7 +27,10 @@ interface CoxDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertDataSetId(dataSetId: DataSetId)
 
-    @Query("Select id from datasetId")
+    @Query("SELECT id from datasetId")
     fun fetchDataSetId(): Single<String>
+
+    @Query("SELECT DISTINCT dealerId from vehicles ")
+    fun fetchDealerIdsFromVehicle(): Single<List<Int>>
 
 }

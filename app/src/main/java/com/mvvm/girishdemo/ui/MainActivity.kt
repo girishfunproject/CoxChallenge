@@ -2,16 +2,15 @@ package com.mvvm.girishdemo.ui
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
-import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.mvvm.girishdemo.R
 import com.mvvm.girishdemo.base.BaseActivity
 import com.mvvm.girishdemo.model.Vehicle
+import com.mvvm.girishdemo.utils.visible
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
@@ -34,26 +33,21 @@ class MainActivity : BaseActivity(true) {
         coxViewModel =
             ViewModelProviders.of(this, coxViewModelFactory).get(CoxViewModel::class.java)
         sharedPreference = getSharedPreferences("cox_prefs", Context.MODE_PRIVATE)
+        getVehicleList()
     }
 
-    @RequiresApi(Build.VERSION_CODES.N)
-    override fun onResume() {
-        super.onResume()
-        retrieveVehicleList()
-    }
-
-    @RequiresApi(Build.VERSION_CODES.N)
-    private fun retrieveVehicleList() {
+    private fun getVehicleList() {
         coxViewModel.getVehicleList()
 
+        //call to get all vehicles info and then we enable the Get Dealers button
         coxViewModel.getVehicleListResult().observe(this, Observer<List<Vehicle>> {
             Log.d("MainActivity:", it.toString())
+            get_dealers.visible()
         })
-
     }
 
     private fun setupButtonOnClick() {
-        getId.setOnClickListener {
+        get_dealers.setOnClickListener {
             //start dealer fragment
             loadDealerFragment()
         }
@@ -81,11 +75,7 @@ class MainActivity : BaseActivity(true) {
         return super.onOptionsItemSelected(item)
     }
 
-    fun getVehicleIdList(): List<String>? {
-        return list
-    }
-
-    fun getViewModel(): CoxViewModel? {
+    fun getViewModel(): CoxViewModel {
         return coxViewModel
     }
 

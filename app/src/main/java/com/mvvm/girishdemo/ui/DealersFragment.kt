@@ -8,7 +8,7 @@ import android.view.View
 import androidx.lifecycle.Observer
 import com.mvvm.girishdemo.R
 import com.mvvm.girishdemo.base.BaseFragment
-import com.mvvm.girishdemo.model.Vehicle
+import com.mvvm.girishdemo.model.Dealer
 
 
 /**
@@ -18,39 +18,25 @@ import com.mvvm.girishdemo.model.Vehicle
 class DealersFragment : BaseFragment() {
 
     private var sharedPreference: SharedPreferences? = null
-    private var coxViewModel: CoxViewModel? = null
-    private var vehicleIdList: List<String>? = null
-    override fun getLayoutResId(): Int = R.layout.dealers_fragment
+    lateinit var coxViewModel: CoxViewModel
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
+    override fun getLayoutResId(): Int = R.layout.dealers_fragment
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         sharedPreference = context?.getSharedPreferences("cox_prefs", Context.MODE_PRIVATE)
         coxViewModel = (activity as MainActivity).getViewModel()
-        vehicleIdList = (activity as MainActivity).getVehicleIdList()
         //setuprecyclerView()
-        //setUpListeners()
-        //observeViewModelData()
-
-
-        fetchVehicleData()
+        getDealerList()
     }
 
     //first time make api call to get vehicle infos
-    private fun fetchVehicleData() {
+    private fun getDealerList() {
 
-        coxViewModel?.getVehicleInfoListFromApi(vehicleIdList)
-
-        coxViewModel?.getVehicleInfoListResult()?.observe(viewLifecycleOwner,
-            Observer<List<Vehicle>> {
-                Log.d("Vehicle Info:", "$it")
-            }
-        )
+        coxViewModel.getDealerList()
+        coxViewModel.getDealerListResult().observe(viewLifecycleOwner, Observer<List<Dealer>> {
+            Log.d("DealersFragment:", it.toString())
+        })
     }
-
-
 }

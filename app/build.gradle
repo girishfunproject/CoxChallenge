@@ -11,7 +11,7 @@ android {
     buildToolsVersion "29.0.2"
     defaultConfig {
         applicationId "com.mvvm.girishdemo"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -26,6 +26,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -55,7 +59,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     implementation "androidx.appcompat:appcompat:$android_core"
-    implementation "androidx.core:core-ktx:$android_core"
+    implementation "androidx.core:core-ktx:1.2.0"
 
     //KOTLIN
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"

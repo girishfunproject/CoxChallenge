@@ -39,8 +39,7 @@ class AppModule(val app: Application) {
     @Singleton
     fun provideCoxDatabase(app: Application): CoxDatabase = Room.databaseBuilder(
         app,
-        CoxDatabase::class.java, Constants.DATABASE_NAME
-    )
+        CoxDatabase::class.java, Constants.DATABASE_NAME)
         /*.addMigrations(MIGRATION_1_2)*/
         .fallbackToDestructiveMigration()
         .build()

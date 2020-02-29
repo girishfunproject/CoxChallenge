@@ -1,6 +1,5 @@
 package com.mvvm.girishdemo.data
 
-import android.util.Log
 import com.mvvm.girishdemo.data.db.CoxDao
 import com.mvvm.girishdemo.data.server.ApiInterface
 import com.mvvm.girishdemo.model.DataSetId
@@ -19,7 +18,21 @@ class CoxRepository @Inject constructor(
     private val coxDao: CoxDao,
     private val networkUtils: InternetUtils
 ) {
-    //////////////////////////////////////////////////////////////////////////
+
+    private fun getDataSetIdFromDB(): String {
+        return coxDao.fetchDataSetId().toObservable().blockingFirst()
+    }
+
+    fun getDealerIdsFromDB(): Observable<List<Int>> {
+        return coxDao.fetchDealerIdsFromVehicle().toObservable()
+    }
+
+    fun getVehicleListFromApi(): Observable<VehicleIdList>? {
+        return getDataSetIdFromApi()?.flatMap {
+            getVehicleList(getDataSetIdFromDB())
+        }
+    }
+
     private fun getDataSetIdFromApi(): Observable<DataSetId>? {
         return apiInterface.getDataSetId()
             .doOnNext {
@@ -27,85 +40,45 @@ class CoxRepository @Inject constructor(
             }
     }
 
-    fun getDataSetIdFromDB(): Observable<String> {
-        return coxDao.fetchDataSetId().toObservable().doOnNext {
-            Log.d("data set id from DB:", it)
-        }
-    }
-
-//////////////////////////////////////////////////////////////////////////
-
-    fun getVehicleIdsObservable(): Observable<VehicleIdList>? {
-        val hasConnection = networkUtils.isConnectedToInternet()
-        var vehicleIdsObservable: Observable<VehicleIdList>?
-        if (hasConnection) {
-            vehicleIdsObservable = getVehicleListFromApi()
-        } else {
-            return null
-        }
-        return vehicleIdsObservable
-    }
-
-    fun getVehicleListFromApi(): Observable<VehicleIdList>? {
-        return getDataSetIdFromApi()?.flatMap { it ->
-            Log.d("Cox Repository :", it.dataSetId)
-            getVehicleList(it.dataSetId)
-        }?.doOnNext {
-            Log.d("Cox Repository List :", it.toString())
-        }
-    }
-
     private fun getVehicleList(id: String): Observable<VehicleIdList>? {
         return if (networkUtils.isConnectedToInternet()) {
             apiInterface.getVehicleList(id)
-                .doOnNext {
-                }
         } else {
-            null
+            Observable.error(Throwable("No Internet"))
         }
     }
 
-//////////////////////////////////////////////////////////////////////////
-
     fun getVehicleInfoFromApi(vehicleId: String): Observable<Vehicle> {
-        val id = getDataSetIdFromDB()
         return if (networkUtils.isConnectedToInternet()) {
-            apiInterface.getVehicleInfo(id.toString(), vehicleId)
+            apiInterface.getVehicleInfo(getDataSetIdFromDB(), vehicleId)
                 .doOnNext {
                     //save to database
                     coxDao.insertVehicleInfo(it)
                 }
         } else {
-            Observable.error(Throwable("asdfasf"))
+            Observable.error(Throwable("No Internet"))
         }
     }
 
     fun getDealerInfoFromApi(dealerId: Int): Observable<Dealer>? {
-        val id = getDataSetIdFromDB()
-
         return if (networkUtils.isConnectedToInternet()) {
-            apiInterface.getDealerInfo(id.toString(), dealerId)
+            apiInterface.getDealerInfo(getDataSetIdFromDB(), dealerId)
                 .doOnNext {
                     coxDao.insertDealerInfo(it)
                 }
         } else {
-            null
+            Observable.error(Throwable("No Internet"))
         }
     }
 
     fun getAllVehicleInfofromDB(): Observable<List<Vehicle>> {
-        return coxDao.queryAllVehicles()
-            .toObservable()
-            .doOnNext {
-                Log.d("All vehicles from DB:", it.toString())
-            }
+        return coxDao.queryAllVehicles().toObservable()
     }
 
     fun getVehicleInfoListFromApi(vehicleIdList: List<String>?) {
-        val id = getDataSetIdFromDB()
         if (vehicleIdList != null) {
             for (vehicleId in vehicleIdList) {
-                getVehicleInfoFromApi( vehicleId)
+                getVehicleInfoFromApi(vehicleId)
             }
         }
     }
