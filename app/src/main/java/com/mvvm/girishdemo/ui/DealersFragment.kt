@@ -9,13 +9,21 @@ import androidx.lifecycle.Observer
 import com.mvvm.girishdemo.R
 import com.mvvm.girishdemo.base.BaseFragment
 import com.mvvm.girishdemo.model.Dealer
+import com.mvvm.girishdemo.utils.Constants
+import com.mvvm.girishdemo.utils.Utils
+import com.mvvm.girishdemo.utils.gone
+import com.mvvm.girishdemo.utils.visible
+import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
 
 /**
  * Created by Girish Sigicherla on 2/26/2020.
  */
 
-class DealersFragment : BaseFragment() {
+class DealersFragment @Inject constructor(
+    private val utils: Utils
+) : BaseFragment() {
 
     private var sharedPreference: SharedPreferences? = null
     lateinit var coxViewModel: CoxViewModel
@@ -31,13 +39,26 @@ class DealersFragment : BaseFragment() {
         getDealerList()
     }
 
-    //first time make api call to get vehicle infos
+    //first time make api call to get dealer info
     private fun getDealerList() {
-        coxViewModel?.let{
-            it.getDealerList()
-            it.getDealerListResult().observe(viewLifecycleOwner, Observer<List<Dealer>> {
-                Log.d("DealersFragment:", it.toString())
+        if (!utils.isDataBaseCreated()) {
+            progressBar.visible()
+            coxViewModel.getDealerList()
+            coxViewModel.getDealerListResult().observe(viewLifecycleOwner, Observer<List<Dealer>> {
+                Log.d("DealersFragment: From API", it.toString())
+                //set a flag to shared prefs that Vehicle and Dealer tables are successfully created
+                sharedPreference?.edit()?.putBoolean(Constants.IS_DATABASE_CREATED, true)?.apply()
+                coxViewModel.getDealerListFromDB()
             })
+        } else {
+            progressBar.visible()
+            coxViewModel.getDealerListFromDB()
         }
+
+        coxViewModel.getDealerListDBResult().observe(viewLifecycleOwner, Observer<List<Dealer>> {
+            progressBar.gone()
+            Log.d("DealersFragment: From DATABASE", it.toString())
+            //populate recycler view here
+        })
     }
 }

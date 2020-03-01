@@ -9,11 +9,12 @@ import javax.inject.Inject
  * Created by Girish Sigicherla on 2/26/2020.
  */
 
-class InternetUtils @Inject constructor(private val context: Context) {
+class Utils @Inject constructor(private val context: Context) {
 
     fun isConnectedToInternet(): Boolean {
         val connectivity = context.getSystemService(
-            Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            Context.CONNECTIVITY_SERVICE
+        ) as ConnectivityManager
         if (connectivity != null) {
             val info = connectivity.allNetworkInfo
             if (info != null)
@@ -23,5 +24,10 @@ class InternetUtils @Inject constructor(private val context: Context) {
                     }
         }
         return false
+    }
+
+    fun isDataBaseCreated(): Boolean {
+        val sharedPreference = context.getSharedPreferences("cox_prefs", Context.MODE_PRIVATE)
+        return sharedPreference.getBoolean(Constants.IS_DATABASE_CREATED, false)
     }
 }

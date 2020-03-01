@@ -33,4 +33,7 @@ interface CoxDao {
     @Query("SELECT DISTINCT dealerId from vehicles ")
     fun fetchDealerIdsFromVehicle(): Single<List<Int>>
 
+    @Query("SELECT * FROM dealers ORDER BY name")
+    fun queryAllDealers(): Single<List<Dealer>>
+
 }

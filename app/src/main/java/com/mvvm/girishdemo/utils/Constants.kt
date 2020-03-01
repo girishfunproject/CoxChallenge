@@ -9,5 +9,6 @@ class Constants {
         const val LIMIT = 12
         const val START_ZERO_VALUE = "0"
         const val DATABASE_NAME = "coxvehicles_db"
+        const val IS_DATABASE_CREATED = "database_created"
     }
 }

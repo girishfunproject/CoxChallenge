@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.mvvm.girishdemo.data.CoxRepository
 import com.mvvm.girishdemo.model.Dealer
 import com.mvvm.girishdemo.model.Vehicle
+import com.mvvm.girishdemo.utils.Utils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
@@ -16,7 +17,8 @@ import javax.inject.Inject
  * Created by Girish Sigicherla on 2/26/2020.
  */
 class CoxViewModel @Inject constructor(
-    private val coxRepository: CoxRepository
+    private val coxRepository: CoxRepository,
+    private val utils: Utils
 ) : ViewModel() {
 
     var errorString: MutableLiveData<String> = MutableLiveData()
@@ -24,11 +26,20 @@ class CoxViewModel @Inject constructor(
     var vehicleListResult: MutableLiveData<List<Vehicle>> = MutableLiveData()
     private lateinit var vehicleListDisposableObserver: DisposableObserver<Vehicle>
 
+    var vehicleListDBResult: MutableLiveData<List<Vehicle>> = MutableLiveData()
+    private lateinit var vehicleListDBDisposableObserver: DisposableObserver<List<Vehicle>>
+
     var dealerListResult: MutableLiveData<List<Dealer>> = MutableLiveData()
     private lateinit var dealerListDisposableObserver: DisposableObserver<Dealer>
 
+    var dealerListDBResult: MutableLiveData<List<Dealer>> = MutableLiveData()
+    private lateinit var dealerListDBDisposableObserver: DisposableObserver<List<Dealer>>
+
 
     fun getVehicleListResult(): LiveData<List<Vehicle>> = vehicleListResult
+    fun getVehicleListDBResult(): LiveData<List<Vehicle>> = vehicleListDBResult
+
+    fun getVehicleListError(): LiveData<String> = errorString
 
     //fetching from API and not DB
     fun getVehicleList() {
@@ -47,7 +58,7 @@ class CoxViewModel @Inject constructor(
             }
         }
         coxRepository.getVehicleListFromApi()
-            ?.flatMap { list ->
+            .flatMap { list ->
                 Observable.fromIterable(list.vehicleIds).flatMap {
                     coxRepository.getVehicleInfoFromApi(it)
                 }
@@ -57,7 +68,28 @@ class CoxViewModel @Inject constructor(
             ?.subscribe(vehicleListDisposableObserver)
     }
 
+    fun getVehicleListFromDB() {
+        vehicleListDBDisposableObserver = object : DisposableObserver<List<Vehicle>>() {
+            override fun onComplete() {
+            }
+
+            override fun onNext(list: List<Vehicle>) {
+                vehicleListDBResult.postValue(list)
+            }
+
+            override fun onError(e: Throwable) {
+            }
+
+        }
+        coxRepository.getAllVehicleInfoFromDB()
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(vehicleListDBDisposableObserver)
+    }
+
     fun getDealerListResult(): LiveData<List<Dealer>> = dealerListResult
+
+    fun getDealerListDBResult(): LiveData<List<Dealer>> = dealerListDBResult
 
     fun getDealerList() {
         var dealerList = ArrayList<Dealer>()
@@ -85,4 +117,30 @@ class CoxViewModel @Inject constructor(
             ?.subscribe(dealerListDisposableObserver)
     }
 
+    fun getDealerListFromDB() {
+        dealerListDBDisposableObserver = object : DisposableObserver<List<Dealer>>() {
+            override fun onComplete() {
+            }
+
+            override fun onNext(list: List<Dealer>) {
+                dealerListDBResult.postValue(list)
+            }
+
+            override fun onError(e: Throwable) {
+            }
+
+        }
+        coxRepository.getAllDealersFromDB()
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(dealerListDBDisposableObserver)
+
+    }
+
+    fun disposeElements() {
+        if (::vehicleListDisposableObserver.isInitialized && !vehicleListDisposableObserver.isDisposed) vehicleListDisposableObserver.dispose()
+        if (::vehicleListDBDisposableObserver.isInitialized && !vehicleListDBDisposableObserver.isDisposed) vehicleListDBDisposableObserver.dispose()
+        if (::dealerListDisposableObserver.isInitialized && !dealerListDisposableObserver.isDisposed) dealerListDisposableObserver.dispose()
+        if (::dealerListDBDisposableObserver.isInitialized && !dealerListDBDisposableObserver.isDisposed) dealerListDBDisposableObserver.dispose()
+    }
 }

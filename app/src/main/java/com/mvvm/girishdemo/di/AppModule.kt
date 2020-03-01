@@ -7,7 +7,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 import com.mvvm.girishdemo.data.db.CoxDao
 import com.mvvm.girishdemo.ui.CoxViewModelFactory
 import com.mvvm.girishdemo.utils.Constants
-import com.mvvm.girishdemo.utils.InternetUtils
+import com.mvvm.girishdemo.utils.Utils
 import android.app.Application
 import com.mvvm.girishdemo.data.db.CoxDatabase
 import dagger.Module
@@ -58,5 +58,5 @@ class AppModule(val app: Application) {
 
     @Provides
     @Singleton
-    fun provideUtils(): InternetUtils = InternetUtils(app)
+    fun provideUtils(): Utils = Utils(app)
 }

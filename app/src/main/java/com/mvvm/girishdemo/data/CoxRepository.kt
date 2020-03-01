@@ -6,8 +6,10 @@ import com.mvvm.girishdemo.model.DataSetId
 import com.mvvm.girishdemo.model.Dealer
 import com.mvvm.girishdemo.model.Vehicle
 import com.mvvm.girishdemo.model.VehicleIdList
-import com.mvvm.girishdemo.utils.InternetUtils
+import com.mvvm.girishdemo.utils.Utils
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -16,7 +18,7 @@ import javax.inject.Inject
 class CoxRepository @Inject constructor(
     private val apiInterface: ApiInterface,
     private val coxDao: CoxDao,
-    private val networkUtils: InternetUtils
+    private val utils: Utils
 ) {
 
     private fun getDataSetIdFromDB(): String {
@@ -27,21 +29,25 @@ class CoxRepository @Inject constructor(
         return coxDao.fetchDealerIdsFromVehicle().toObservable()
     }
 
-    fun getVehicleListFromApi(): Observable<VehicleIdList>? {
-        return getDataSetIdFromApi()?.flatMap {
+    fun getAllDealersFromDB(): Observable<List<Dealer>>{
+        return coxDao.queryAllDealers().toObservable()
+    }
+
+    fun getVehicleListFromApi(): Observable<VehicleIdList> {
+        return getDataSetIdFromApi().flatMap {
             getVehicleList(getDataSetIdFromDB())
         }
     }
 
-    private fun getDataSetIdFromApi(): Observable<DataSetId>? {
+    private fun getDataSetIdFromApi(): Observable<DataSetId> {
         return apiInterface.getDataSetId()
             .doOnNext {
                 coxDao.insertDataSetId(it)
             }
     }
 
-    private fun getVehicleList(id: String): Observable<VehicleIdList>? {
-        return if (networkUtils.isConnectedToInternet()) {
+    private fun getVehicleList(id: String): Observable<VehicleIdList> {
+        return if (utils.isConnectedToInternet()) {
             apiInterface.getVehicleList(id)
         } else {
             Observable.error(Throwable("No Internet"))
@@ -49,7 +55,7 @@ class CoxRepository @Inject constructor(
     }
 
     fun getVehicleInfoFromApi(vehicleId: String): Observable<Vehicle> {
-        return if (networkUtils.isConnectedToInternet()) {
+        return if (utils.isConnectedToInternet()) {
             apiInterface.getVehicleInfo(getDataSetIdFromDB(), vehicleId)
                 .doOnNext {
                     //save to database
@@ -60,8 +66,8 @@ class CoxRepository @Inject constructor(
         }
     }
 
-    fun getDealerInfoFromApi(dealerId: Int): Observable<Dealer>? {
-        return if (networkUtils.isConnectedToInternet()) {
+    fun getDealerInfoFromApi(dealerId: Int): Observable<Dealer> {
+        return if (utils.isConnectedToInternet()) {
             apiInterface.getDealerInfo(getDataSetIdFromDB(), dealerId)
                 .doOnNext {
                     coxDao.insertDealerInfo(it)
@@ -71,7 +77,7 @@ class CoxRepository @Inject constructor(
         }
     }
 
-    fun getAllVehicleInfofromDB(): Observable<List<Vehicle>> {
+    fun getAllVehicleInfoFromDB(): Observable<List<Vehicle>> {
         return coxDao.queryAllVehicles().toObservable()
     }
 
