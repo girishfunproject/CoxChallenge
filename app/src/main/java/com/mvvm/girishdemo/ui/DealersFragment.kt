@@ -33,10 +33,11 @@ class DealersFragment : BaseFragment() {
 
     //first time make api call to get vehicle infos
     private fun getDealerList() {
-
-        coxViewModel.getDealerList()
-        coxViewModel.getDealerListResult().observe(viewLifecycleOwner, Observer<List<Dealer>> {
-            Log.d("DealersFragment:", it.toString())
-        })
+        coxViewModel?.let{
+            it.getDealerList()
+            it.getDealerListResult().observe(viewLifecycleOwner, Observer<List<Dealer>> {
+                Log.d("DealersFragment:", it.toString())
+            })
+        }
     }
 }

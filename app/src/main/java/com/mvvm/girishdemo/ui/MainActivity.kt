@@ -38,7 +38,6 @@ class MainActivity : BaseActivity(true) {
 
     private fun getVehicleList() {
         coxViewModel.getVehicleList()
-
         //call to get all vehicles info and then we enable the Get Dealers button
         coxViewModel.getVehicleListResult().observe(this, Observer<List<Vehicle>> {
             Log.d("MainActivity:", it.toString())
