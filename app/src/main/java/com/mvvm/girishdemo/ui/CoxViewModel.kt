@@ -29,6 +29,9 @@ class CoxViewModel @Inject constructor(
     var vehicleListDBResult: MutableLiveData<List<Vehicle>> = MutableLiveData()
     private lateinit var vehicleListDBDisposableObserver: DisposableObserver<List<Vehicle>>
 
+    var vehicleListForDealerDBResult: MutableLiveData<List<Vehicle>> = MutableLiveData()
+    private lateinit var vehicleListForDealerDBDisposableObserver: DisposableObserver<List<Vehicle>>
+
     var dealerListResult: MutableLiveData<List<Dealer>> = MutableLiveData()
     private lateinit var dealerListDisposableObserver: DisposableObserver<Dealer>
 
@@ -38,7 +41,7 @@ class CoxViewModel @Inject constructor(
 
     fun getVehicleListResult(): LiveData<List<Vehicle>> = vehicleListResult
     fun getVehicleListDBResult(): LiveData<List<Vehicle>> = vehicleListDBResult
-
+    fun getVehicleListForDealerDBResult(): LiveData<List<Vehicle>> = vehicleListForDealerDBResult
     fun getVehicleListError(): LiveData<String> = errorString
 
     //fetching from API and not DB
@@ -86,6 +89,26 @@ class CoxViewModel @Inject constructor(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(vehicleListDBDisposableObserver)
     }
+
+    fun getVehicleListForDealerFromDB(dealerId: Int) {
+        vehicleListForDealerDBDisposableObserver = object : DisposableObserver<List<Vehicle>>() {
+            override fun onComplete() {
+            }
+
+            override fun onNext(list: List<Vehicle>) {
+                vehicleListForDealerDBResult.postValue(list)
+            }
+
+            override fun onError(e: Throwable) {
+            }
+
+        }
+        coxRepository.getAllVehicleForDealerFromDB(dealerId)
+            .subscribeOn(Schedulers.newThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(vehicleListForDealerDBDisposableObserver)
+    }
+
 
     fun getDealerListResult(): LiveData<List<Dealer>> = dealerListResult
 

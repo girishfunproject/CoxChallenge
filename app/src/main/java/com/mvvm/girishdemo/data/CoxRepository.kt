@@ -8,8 +8,6 @@ import com.mvvm.girishdemo.model.Vehicle
 import com.mvvm.girishdemo.model.VehicleIdList
 import com.mvvm.girishdemo.utils.Utils
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
 import javax.inject.Inject
 
 /**
@@ -21,17 +19,13 @@ class CoxRepository @Inject constructor(
     private val utils: Utils
 ) {
 
-    private fun getDataSetIdFromDB(): String {
-        return coxDao.fetchDataSetId().toObservable().blockingFirst()
-    }
+    private fun getDataSetIdFromDB(): String =
+        coxDao.fetchDataSetId().toObservable().blockingFirst()
 
-    fun getDealerIdsFromDB(): Observable<List<Int>> {
-        return coxDao.fetchDealerIdsFromVehicle().toObservable()
-    }
+    fun getDealerIdsFromDB(): Observable<List<Int>> =
+        coxDao.fetchDealerIdsFromVehicle().toObservable()
 
-    fun getAllDealersFromDB(): Observable<List<Dealer>>{
-        return coxDao.queryAllDealers().toObservable()
-    }
+    fun getAllDealersFromDB(): Observable<List<Dealer>> = coxDao.queryAllDealers().toObservable()
 
     fun getVehicleListFromApi(): Observable<VehicleIdList> {
         return getDataSetIdFromApi().flatMap {
@@ -77,15 +71,9 @@ class CoxRepository @Inject constructor(
         }
     }
 
-    fun getAllVehicleInfoFromDB(): Observable<List<Vehicle>> {
-        return coxDao.queryAllVehicles().toObservable()
-    }
+    fun getAllVehicleInfoFromDB(): Observable<List<Vehicle>> =
+        coxDao.queryAllVehicles().toObservable()
 
-    fun getVehicleInfoListFromApi(vehicleIdList: List<String>?) {
-        if (vehicleIdList != null) {
-            for (vehicleId in vehicleIdList) {
-                getVehicleInfoFromApi(vehicleId)
-            }
-        }
-    }
+    fun getAllVehicleForDealerFromDB(dealerId: Int): Observable<List<Vehicle>> =
+        coxDao.queryAllVehiclesForDealer(dealerId).toObservable()
 }

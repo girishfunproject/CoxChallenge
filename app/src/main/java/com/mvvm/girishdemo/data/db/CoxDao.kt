@@ -36,4 +36,7 @@ interface CoxDao {
     @Query("SELECT * FROM dealers ORDER BY name")
     fun queryAllDealers(): Single<List<Dealer>>
 
+    @Query("SELECT * from vehicles WHERE dealerId == :id")
+    fun queryAllVehiclesForDealer(id: Int): Single<List<Vehicle>>
+
 }

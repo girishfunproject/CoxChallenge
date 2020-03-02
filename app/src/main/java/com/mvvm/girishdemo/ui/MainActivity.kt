@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.mvvm.girishdemo.R
@@ -18,7 +19,8 @@ import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
-class MainActivity : BaseActivity(true) {
+
+class MainActivity : BaseActivity() {
 
     override fun getLayoutResId(): Int = R.layout.activity_main
 
@@ -47,6 +49,7 @@ class MainActivity : BaseActivity(true) {
             //call to get all vehicles info and then we enable the Get Dealers button
             coxViewModel.getVehicleListResult().observe(this, Observer<List<Vehicle>> {
                 Log.d("MainActivity: From API", it.toString())
+                Toast.makeText(this, "All vehicles retrieved from server", Toast.LENGTH_SHORT).show()
                 coxViewModel.getVehicleListFromDB()
             })
         } else {
@@ -62,38 +65,23 @@ class MainActivity : BaseActivity(true) {
 
         coxViewModel.getVehicleListError().observe(this, Observer<String> {
             progressBar.gone()
-            Toast.makeText(this, it, Toast.LENGTH_LONG)
+            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
         })
     }
 
     private fun setupButtonOnClick() {
         get_dealers.setOnClickListener {
             //start dealer fragment
-            loadDealerFragment()
+            loadFragment(DealersFragment(utils))
         }
     }
 
-    private fun loadDealerFragment() {
-        actionBar?.setDisplayHomeAsUpEnabled(true)
-        val fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction.replace(R.id.fragmentContainer, DealersFragment(utils))
-            .addToBackStack("root").commit()
+    private fun loadFragment(fragment: Fragment) {
+        // create a FragmentTransaction to begin the transaction and replace the Fragment
+        supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, fragment)
+            .addToBackStack(null).commit()
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                val fm = supportFragmentManager
-                if (fm.backStackEntryCount > 0) {
-                    fm.popBackStack()
-                    return true
-                } else {
-                    actionBar?.setDisplayHomeAsUpEnabled(false)
-                }
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
 
     fun getViewModel(): CoxViewModel {
         return coxViewModel

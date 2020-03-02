@@ -1,4 +1,8 @@
 <resources>
-    <string name="app_name">GirishDemo</string>
+    <string name="app_name">Cox Demo</string>
     <string name="dataSetId_error_msg">No internet</string>
+    <string name="get_dealers">Get Dealers</string>
+    <string name="dealers_title">Dealers</string>
+    <string name="vehicles_title">Vehicles</string>
+    <string name="cox_demo">Cox Demo</string>
 </resources>
