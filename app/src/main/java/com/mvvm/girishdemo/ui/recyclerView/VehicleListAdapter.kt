@@ -18,7 +18,7 @@ class VehicleListAdapter : RecyclerView.Adapter<VehicleListAdapter.VehicleViewHo
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
-    ): VehicleListAdapter.VehicleViewHolder {
+    ): VehicleViewHolder {
         val vehicleView =
             LayoutInflater.from(parent.context).inflate(R.layout.vehicle_item_view, parent, false)
         return VehicleViewHolder(vehicleView)
@@ -26,7 +26,7 @@ class VehicleListAdapter : RecyclerView.Adapter<VehicleListAdapter.VehicleViewHo
 
     override fun getItemCount(): Int = vehicles.size
 
-    override fun onBindViewHolder(holder: VehicleListAdapter.VehicleViewHolder, position: Int) =
+    override fun onBindViewHolder(holder: VehicleViewHolder, position: Int) =
         holder.bind(vehicles[position])
 
     inner class VehicleViewHolder(vehicleView: View) : RecyclerView.ViewHolder(vehicleView) {

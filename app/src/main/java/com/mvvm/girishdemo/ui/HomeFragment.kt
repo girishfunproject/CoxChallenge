@@ -12,7 +12,6 @@ import com.mvvm.girishdemo.model.Vehicle
 import com.mvvm.girishdemo.utils.Utils
 import com.mvvm.girishdemo.utils.gone
 import com.mvvm.girishdemo.utils.visible
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.home_fragment.*
 import javax.inject.Inject
 
@@ -42,7 +41,7 @@ class HomeFragment @Inject constructor(
             //call to get all vehicles info and then we enable the Get Dealers button
             coxViewModel.getVehicleListResult()
                 .observe(viewLifecycleOwner, Observer<List<Vehicle>> {
-                    Log.d("MainActivity: From API", it.toString())
+                    Log.d("$TAG : From API", it.toString())
                     Toast.makeText(
                         context,
                         "All vehicles retrieved from server",
@@ -56,7 +55,7 @@ class HomeFragment @Inject constructor(
         }
 
         coxViewModel.getVehicleListDBResult().observe(viewLifecycleOwner, Observer<List<Vehicle>> {
-            Log.d("MainActivity: From DATABASE", it.toString())
+            Log.d("$TAG : From DATABASE", it.toString())
             progress_bar.gone()
             get_dealers.visible()
         })
@@ -76,8 +75,12 @@ class HomeFragment @Inject constructor(
 
     private fun loadFragment(fragment: Fragment) {
         // create a FragmentTransaction to begin the transaction and replace the Fragment
-        activity?.supportFragmentManager?.beginTransaction()?.replace(R.id.fragmentContainer, fragment)
+        activity?.supportFragmentManager?.beginTransaction()
+            ?.replace(R.id.fragmentContainer, fragment)
             ?.addToBackStack(null)?.commit()
     }
 
+    private companion object {
+        private val TAG = HomeFragment::class.java.simpleName
+    }
 }

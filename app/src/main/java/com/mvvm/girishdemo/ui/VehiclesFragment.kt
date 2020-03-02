@@ -38,17 +38,32 @@ class VehiclesFragment(var dealerId: Int) : BaseFragment() {
     }
 
     private fun getVehicleList(dealerId: Int) {
-        coxViewModel.getVehicleListForDealerFromDB(dealerId)
+        coxViewModel.apply {
+            getVehicleListForDealerFromDB(dealerId)
 
-        coxViewModel.getVehicleListForDealerDBResult()
-            .observe(viewLifecycleOwner, Observer<List<Vehicle>> {
-                Log.d("VehiclesFragment: for dealer From DATABASE", it.toString())
-                Toast.makeText(context, "All Vehicles fetched from Database", Toast.LENGTH_SHORT).show()
+            getVehicleListForDealerDBResult()
+                .observe(viewLifecycleOwner, Observer<List<Vehicle>> {
+                    Log.d("$TAG : for dealer From DATABASE", it.toString())
+                    Toast.makeText(
+                        context,
+                        "All Vehicles fetched from Database",
+                        Toast.LENGTH_SHORT
+                    ).show()
 
-                vehicleAdapter.apply {
-                    vehicles = it
-                    notifyDataSetChanged()
-                }
-            })
+                    vehicleAdapter.apply {
+                        vehicles = it
+                        notifyDataSetChanged()
+                    }
+                })
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        (activity as MainActivity).setTitle(R.string.dealers_title)
+    }
+
+    private companion object {
+        private val TAG = VehiclesFragment::class.java.simpleName
     }
 }

@@ -12,7 +12,6 @@ import retrofit2.http.Path
  * Created by Girish Sigicherla on 2/26/2020.
  */
 interface ApiInterface {
-//http://api.coxauto-interview.com/api/
 
     @GET("datasetId")
     fun getDataSetId(): Observable<DataSetId>

@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import com.mvvm.girishdemo.data.CoxRepository
 import com.mvvm.girishdemo.model.Dealer
 import com.mvvm.girishdemo.model.Vehicle
-import com.mvvm.girishdemo.utils.Utils
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.observers.DisposableObserver
@@ -17,8 +16,7 @@ import javax.inject.Inject
  * Created by Girish Sigicherla on 2/26/2020.
  */
 class CoxViewModel @Inject constructor(
-    private val coxRepository: CoxRepository,
-    private val utils: Utils
+    private val coxRepository: CoxRepository
 ) : ViewModel() {
 
     var errorString: MutableLiveData<String> = MutableLiveData()
@@ -115,7 +113,7 @@ class CoxViewModel @Inject constructor(
     fun getDealerListDBResult(): LiveData<List<Dealer>> = dealerListDBResult
 
     fun getDealerList() {
-        var dealerList = ArrayList<Dealer>()
+        val dealerList = ArrayList<Dealer>()
         dealerListDisposableObserver = object : DisposableObserver<Dealer>() {
             override fun onComplete() {
                 dealerListResult.postValue(dealerList)

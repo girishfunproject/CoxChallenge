@@ -41,12 +41,12 @@ class DealersFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as MainActivity).setTitle(R.string.dealers_title)
         sharedPreference = context?.getSharedPreferences("cox_prefs", Context.MODE_PRIVATE)
         coxViewModel = (activity as MainActivity).getViewModel()
         itemDecorator = context?.let { ItemDecorator(it) }
         setupRecyclerView()
         getDealerList()
-        (activity as MainActivity).setTitle(R.string.dealers_title)
     }
 
     private fun setupRecyclerView() {
@@ -64,7 +64,7 @@ class DealersFragment @Inject constructor(
             progress_bar.visible()
             coxViewModel.getDealerList()
             coxViewModel.getDealerListResult().observe(viewLifecycleOwner, Observer<List<Dealer>> {
-                Log.d("DealersFragment: From API", it.toString())
+                Log.d("$TAG : From API", it.toString())
                 Toast.makeText(context, "All Dealers retrieved from Server", Toast.LENGTH_SHORT)
                     .show()
                 //set a flag to shared prefs that Vehicle and Dealer tables are successfully created
@@ -78,7 +78,7 @@ class DealersFragment @Inject constructor(
 
         coxViewModel.getDealerListDBResult().observe(viewLifecycleOwner, Observer<List<Dealer>> {
             progress_bar.gone()
-            Log.d("DealersFragment: From DATABASE", it.toString())
+            Log.d("$TAG : From DATABASE", it.toString())
             Toast.makeText(context, "All Dealers fetched from Database", Toast.LENGTH_SHORT).show()
             dealerAdapter.apply {
                 dealers = it
@@ -97,5 +97,9 @@ class DealersFragment @Inject constructor(
     override fun onDestroy() {
         super.onDestroy()
         (activity as MainActivity).setTitle(R.string.cox_demo)
+    }
+
+    private companion object {
+        private val TAG = DealersFragment::class.java.simpleName
     }
 }

@@ -24,11 +24,10 @@ class DealerListAdapter(var onItemClickListener: OnItemClickListener) :
         return DealerViewHolder(dealerView)
     }
 
-    override fun onBindViewHolder(holder: DealerViewHolder, position: Int) = holder.bind(dealers[position])
-
+    override fun onBindViewHolder(holder: DealerViewHolder, position: Int) =
+        holder.bind(dealers[position])
 
     override fun getItemCount(): Int = dealers.size
-
 
     inner class DealerViewHolder(var dealerView: View) : RecyclerView.ViewHolder(dealerView) {
         private val dealerName: TextView = dealerView.findViewById(R.id.dealer_name)
