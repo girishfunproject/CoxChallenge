@@ -44,10 +44,10 @@ class DealersFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         sharedPreference = context?.getSharedPreferences("cox_prefs", Context.MODE_PRIVATE)
         coxViewModel = (activity as MainActivity).getViewModel()
+        itemDecorator = context?.let { ItemDecorator(it) }
         setupRecyclerView()
         getDealerList()
         (activity as MainActivity).setTitle(R.string.dealers_title)
-        itemDecorator = context?.let { ItemDecorator(it) }
     }
 
     private fun setupRecyclerView() {

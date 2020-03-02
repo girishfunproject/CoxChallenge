@@ -25,10 +25,10 @@ class VehiclesFragment(var dealerId: Int) : BaseFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         coxViewModel = (activity as MainActivity).getViewModel()
+        itemDecorator = context?.let { ItemDecorator(it) }
         setUpRecyclerView()
         getVehicleList(dealerId)
         (activity as MainActivity).setTitle(R.string.vehicles_title)
-        itemDecorator = context?.let { ItemDecorator(it) }
     }
 
     private fun setUpRecyclerView() {
