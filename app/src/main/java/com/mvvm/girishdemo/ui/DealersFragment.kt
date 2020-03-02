@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.RecyclerView
 import com.mvvm.girishdemo.R
 import com.mvvm.girishdemo.base.BaseFragment
 import com.mvvm.girishdemo.model.Dealer
@@ -19,7 +18,7 @@ import com.mvvm.girishdemo.utils.Constants
 import com.mvvm.girishdemo.utils.Utils
 import com.mvvm.girishdemo.utils.gone
 import com.mvvm.girishdemo.utils.visible
-import kotlinx.android.synthetic.main.activity_main.progressBar
+import kotlinx.android.synthetic.main.dealers_fragment.*
 import javax.inject.Inject
 
 
@@ -34,7 +33,7 @@ class DealersFragment @Inject constructor(
     private var sharedPreference: SharedPreferences? = null
     private var dealersRecyclerView: CoxRecyclerView? = null
     private var itemDecorator: ItemDecorator? = null
-    lateinit var coxViewModel: CoxViewModel
+    private lateinit var coxViewModel: CoxViewModel
     private var dealerAdapter =
         DealerListAdapter(this)
 
@@ -62,7 +61,7 @@ class DealersFragment @Inject constructor(
     //first time make api call to get dealer info
     private fun getDealerList() {
         if (!utils.isDataBaseCreated()) {
-            progressBar.visible()
+            progress_bar.visible()
             coxViewModel.getDealerList()
             coxViewModel.getDealerListResult().observe(viewLifecycleOwner, Observer<List<Dealer>> {
                 Log.d("DealersFragment: From API", it.toString())
@@ -73,12 +72,12 @@ class DealersFragment @Inject constructor(
                 coxViewModel.getDealerListFromDB()
             })
         } else {
-            progressBar.visible()
+            progress_bar.visible()
             coxViewModel.getDealerListFromDB()
         }
 
         coxViewModel.getDealerListDBResult().observe(viewLifecycleOwner, Observer<List<Dealer>> {
-            progressBar.gone()
+            progress_bar.gone()
             Log.d("DealersFragment: From DATABASE", it.toString())
             Toast.makeText(context, "All Dealers fetched from Database", Toast.LENGTH_SHORT).show()
             dealerAdapter.apply {
@@ -90,7 +89,7 @@ class DealersFragment @Inject constructor(
 
     override fun onItemClicked(dealerId: Int) {
         activity?.supportFragmentManager?.beginTransaction()
-            ?.replace(R.id.fragmentContainer, VehiclesFragment(dealerId), null)
+            ?.add(R.id.fragmentContainer, VehiclesFragment(dealerId), null)
             ?.addToBackStack(null)
             ?.commit()
     }

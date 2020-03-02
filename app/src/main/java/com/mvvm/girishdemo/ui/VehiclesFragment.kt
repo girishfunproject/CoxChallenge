@@ -20,12 +20,10 @@ class VehiclesFragment(var dealerId: Int) : BaseFragment() {
     private lateinit var coxViewModel: CoxViewModel
     private var vehiclesRecyclerView: CoxRecyclerView? = null
     private var vehicleAdapter = VehicleListAdapter()
-    private var itemDecorator: ItemDecorator? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         coxViewModel = (activity as MainActivity).getViewModel()
-        itemDecorator = context?.let { ItemDecorator(it) }
         setUpRecyclerView()
         getVehicleList(dealerId)
         (activity as MainActivity).setTitle(R.string.vehicles_title)
@@ -36,7 +34,6 @@ class VehiclesFragment(var dealerId: Int) : BaseFragment() {
         vehiclesRecyclerView?.apply {
             adapter = vehicleAdapter
             isHorizontal = true
-            itemDecorator?.let { addItemDecoration(it) }
         }
     }
 

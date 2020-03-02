@@ -28,60 +28,18 @@ class MainActivity : BaseActivity() {
     lateinit var coxViewModelFactory: CoxViewModelFactory
     lateinit var coxViewModel: CoxViewModel
     lateinit var utils: Utils
-    private lateinit var sharedPreference: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
-        utils = Utils(context = this)
-        setupButtonOnClick()
+        utils = Utils(this)
         coxViewModel =
             ViewModelProviders.of(this, coxViewModelFactory).get(CoxViewModel::class.java)
-        sharedPreference = getSharedPreferences("cox_prefs", Context.MODE_PRIVATE)
-        getVehicleList()
-    }
-
-    private fun getVehicleList() {
-        if (!utils.isDataBaseCreated()) {
-            progressBar.visible()
-            //make necessary API calls and store in DB for the first time
-            coxViewModel.getVehicleList()
-            //call to get all vehicles info and then we enable the Get Dealers button
-            coxViewModel.getVehicleListResult().observe(this, Observer<List<Vehicle>> {
-                Log.d("MainActivity: From API", it.toString())
-                Toast.makeText(this, "All vehicles retrieved from server", Toast.LENGTH_SHORT).show()
-                coxViewModel.getVehicleListFromDB()
-            })
-        } else {
-            progressBar.visible()
-            coxViewModel.getVehicleListFromDB()
+        if (savedInstanceState != null) {
+            return
         }
-
-        coxViewModel.getVehicleListDBResult().observe(this, Observer<List<Vehicle>> {
-            Log.d("MainActivity: From DATABASE", it.toString())
-            progressBar.gone()
-            get_dealers.visible()
-        })
-
-        coxViewModel.getVehicleListError().observe(this, Observer<String> {
-            progressBar.gone()
-            Toast.makeText(this, it, Toast.LENGTH_SHORT).show()
-        })
+        supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, HomeFragment(utils)).commit()
     }
-
-    private fun setupButtonOnClick() {
-        get_dealers.setOnClickListener {
-            //start dealer fragment
-            loadFragment(DealersFragment(utils))
-        }
-    }
-
-    private fun loadFragment(fragment: Fragment) {
-        // create a FragmentTransaction to begin the transaction and replace the Fragment
-        supportFragmentManager.beginTransaction().add(R.id.fragmentContainer, fragment)
-            .addToBackStack(null).commit()
-    }
-
 
     fun getViewModel(): CoxViewModel {
         return coxViewModel

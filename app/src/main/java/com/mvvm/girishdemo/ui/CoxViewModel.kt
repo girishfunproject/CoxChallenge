@@ -163,6 +163,7 @@ class CoxViewModel @Inject constructor(
     fun disposeElements() {
         if (::vehicleListDisposableObserver.isInitialized && !vehicleListDisposableObserver.isDisposed) vehicleListDisposableObserver.dispose()
         if (::vehicleListDBDisposableObserver.isInitialized && !vehicleListDBDisposableObserver.isDisposed) vehicleListDBDisposableObserver.dispose()
+        if (::vehicleListForDealerDBDisposableObserver.isInitialized && !vehicleListForDealerDBDisposableObserver.isDisposed) vehicleListForDealerDBDisposableObserver.dispose()
         if (::dealerListDisposableObserver.isInitialized && !dealerListDisposableObserver.isDisposed) dealerListDisposableObserver.dispose()
         if (::dealerListDBDisposableObserver.isInitialized && !dealerListDBDisposableObserver.isDisposed) dealerListDBDisposableObserver.dispose()
     }
