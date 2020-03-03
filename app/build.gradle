@@ -109,4 +109,5 @@ dependencies {
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "com.android.support.test:runner:$testRunnerVersion"
     androidTestImplementation "com.android.support.test.espresso:espresso-core:$testEspressoVersion"
+    androidTestImplementation 'androidx.test:rules:1.3.0-alpha02'
 }
