@@ -8,7 +8,7 @@ Used MVVM Design pattern along with ROOM database to store data for offline stor
 
 Retrofit for network layer
 
-Implemented a custom recycler view and resued it to populate dealer list vertically and vehicle list horizontally.
+Implemented a custom recycler view and resued it to populate dealer list vertically and vehicle list horizontally. Creeated a ItemDecorator to add margins around the recyclerview items.
 
 MainActivity has three fragments HomeFragment, DealersFragment and VehiclesFragment. The vehicle list is retrieved 
 in the HomeFragment and stored in the vehicles table. Once we get back a notification from the live data then we 
