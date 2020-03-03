@@ -5,4 +5,6 @@
     <string name="dealers_title">Dealers</string>
     <string name="vehicles_title">Vehicles</string>
     <string name="cox_demo">Cox Demo</string>
+    <string name="dealers_fetched_msg">All Dealers fetched from Database</string>
+    <string name="vehicles_fetched_msg">All Vehicles fetched from Database</string>
 </resources>

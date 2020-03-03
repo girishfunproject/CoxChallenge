@@ -97,7 +97,7 @@ class DealersFragment @Inject constructor(
         coxViewModel.getDealerListDBResult().observe(viewLifecycleOwner, Observer<List<Dealer>> {
             progress_bar.gone()
             Log.d("$TAG : From DATABASE", it.toString())
-            Toast.makeText(context, "All Dealers fetched from Database", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, getString(R.string.dealers_fetched_msg), Toast.LENGTH_SHORT).show()
             dealerAdapter.apply {
                 dealers = it
                 notifyDataSetChanged()

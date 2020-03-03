@@ -59,7 +59,7 @@ class VehiclesFragment(var dealerId: Int) : BaseFragment() {
                     Log.d("$TAG : for dealer From DATABASE", it.toString())
                     Toast.makeText(
                         context,
-                        "All Vehicles fetched from Database",
+                        getString(R.string.vehicles_fetched_msg),
                         Toast.LENGTH_SHORT
                     ).show()
 
