@@ -15,6 +15,12 @@ import com.mvvm.girishdemo.ui.recyclerView.VehicleListAdapter
 /**
  * Created by Girish Sigicherla on 3/1/2020.
  */
+
+/**
+ * A fragment class used to populate list of vehicles for a given dealer id.
+ * The vehicle list is populated on a custom recycler view @see[CoxRecyclerView] in horizontal fashion.
+ * We observe the live data object that notifies the view when vehicle list is fetched from the databse.
+ */
 class VehiclesFragment(var dealerId: Int) : BaseFragment() {
     override fun getLayoutResId(): Int = R.layout.vehicles_fragment
     private lateinit var coxViewModel: CoxViewModel
@@ -29,6 +35,10 @@ class VehiclesFragment(var dealerId: Int) : BaseFragment() {
         (activity as MainActivity).setTitle(R.string.vehicles_title)
     }
 
+    /**
+     * To set up a recyler view to show list of vehicles of type @see[CoxRecyclerView]
+     * The recycler view will populate the list of vehicles horizontally
+     */
     private fun setUpRecyclerView() {
         vehiclesRecyclerView = view?.findViewById(R.id.vehicleList)
         vehiclesRecyclerView?.apply {
@@ -37,6 +47,9 @@ class VehiclesFragment(var dealerId: Int) : BaseFragment() {
         }
     }
 
+    /**
+     * The vehicle list is fetched from the database using live data
+     */
     private fun getVehicleList(dealerId: Int) {
         coxViewModel.apply {
             getVehicleListForDealerFromDB(dealerId)

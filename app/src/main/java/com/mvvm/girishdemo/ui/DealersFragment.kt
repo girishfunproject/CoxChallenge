@@ -26,6 +26,11 @@ import javax.inject.Inject
  * Created by Girish Sigicherla on 2/26/2020.
  */
 
+/**
+ * A fragment class used to populate list of dealers that are fetched from the @see[Dealer] dealers table.
+ * The dealer list is populated on a custom recycler view @see[CoxRecyclerView] that can display items either horizontally or vertically.
+ * We set a flag using shared preferences in this class once we retrieve all dealers from the server and storing them in the database
+ */
 class DealersFragment @Inject constructor(
     private val utils: Utils
 ) : BaseFragment(), OnItemClickListener {
@@ -49,6 +54,10 @@ class DealersFragment @Inject constructor(
         getDealerList()
     }
 
+    /**
+     * To set up a recycler view to show list of dealers of type @see[CoxRecyclerView]
+     * To demonstrate the flexibility of our custom recycler view, i'm setting it in default vertical mode.
+     */
     private fun setupRecyclerView() {
         dealersRecyclerView = view?.findViewById(R.id.dealersList) as CoxRecyclerView
         dealersRecyclerView?.apply {
@@ -58,7 +67,16 @@ class DealersFragment @Inject constructor(
         }
     }
 
-    //first time make api call to get dealer info
+    /**
+     * First time make api call to get dealer info for all dealers. As we make an API call and get the response we insert dealers to the database.
+     * We observe the live data object to get a notification when this is complete and we populate the dealer list fetched from the database
+     * on to the recycler view.
+     *
+     * NOTE: All all the dealers are inserted into the database, this means that we have successfully saved all vehicles and dealers to the respective tables.
+     * At this point we set a flag in the @see[sharedPreference] that database is created.
+     *
+     * For all subsequent calls we fetch data directly from the database by relying on the @see[utils] isDataBaseCreated method
+     */
     private fun getDealerList() {
         if (!utils.isDataBaseCreated()) {
             progress_bar.visible()
@@ -87,6 +105,9 @@ class DealersFragment @Inject constructor(
         })
     }
 
+    /**
+     * To launch @see[VehiclesFragment] to show a list of vehicles for the given dealerId
+     */
     override fun onItemClicked(dealerId: Int) {
         activity?.supportFragmentManager?.beginTransaction()
             ?.add(R.id.fragmentContainer, VehiclesFragment(dealerId), null)

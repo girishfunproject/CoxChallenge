@@ -5,6 +5,10 @@ import android.view.View
 /**
  * Created by Girish Sigicherla on 2/25/2020.
  */
+
+/**
+ * A utility class that presents a few kotlin extension functions
+ */
 fun String.contains(stringList: List<String>): Boolean {
     for (string in stringList) {
         if ((this.contains(string, true))) {

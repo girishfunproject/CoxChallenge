@@ -18,6 +18,15 @@ import javax.inject.Inject
 /**
  * Created by Girish Sigicherla on 3/1/2020.
  */
+
+/**
+ * This fragment is attached to the @see[MainActivity] and will present a button to launch @see[DealersFragment]
+ * In this class we observe live data objects to be able to know when all the vehicles are retrieved from the server and
+ * when all the vehicles are stored to the database.
+ * Once we get these events back from the view model we hide the progress bar and show the Get Dealers button on the UI to launch DealersFragment.
+ * The live data objects for API calls are being used just to show toast messages or print logs
+ * NOTE: All the data that is populated on the UI is fetched from the DATABASE only.
+ */
 class HomeFragment @Inject constructor(
     private val utils: Utils
 ) : BaseFragment() {
@@ -33,6 +42,13 @@ class HomeFragment @Inject constructor(
         getVehicleList()
     }
 
+    /**
+     * Before making API calls to the server we first check if all required tables are created in the database. This flag is set once we finish
+     * retrieving all dealers in the Dealers Fragment and storing them in the database.
+     * If the database is already created we directly fetch data from the database.
+     *
+     * NOTE: No data is shown in this fragment, We just observe live data objects here to determine when to show progress bar , getDealers button and proper toast messages
+     */
     private fun getVehicleList() {
         if (!utils.isDataBaseCreated()) {
             progress_bar.visible()
@@ -66,15 +82,19 @@ class HomeFragment @Inject constructor(
         })
     }
 
+    /**
+     * start dealer fragment
+     */
     private fun setupButtonOnClick() {
         get_dealers.setOnClickListener {
-            //start dealer fragment
             loadFragment(DealersFragment(utils))
         }
     }
 
+    /**
+     * create a FragmentTransaction to begin the transaction and replace the Fragment
+     */
     private fun loadFragment(fragment: Fragment) {
-        // create a FragmentTransaction to begin the transaction and replace the Fragment
         activity?.supportFragmentManager?.beginTransaction()
             ?.replace(R.id.fragmentContainer, fragment)
             ?.addToBackStack(null)?.commit()

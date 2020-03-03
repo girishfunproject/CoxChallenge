@@ -11,9 +11,9 @@ import com.mvvm.girishdemo.R
  */
 
 /**
- * The CoxRecyclerView class can be used to display a list of view holders
+ * The CoxRecyclerView class can be used to display a list of view holders.
  * This view can present the items either horizontally or vertically based on the view configuration.
- * Uses a LinearLayoutManager as a Layout manager to display items horizontally or vertically
+ * Uses a LinearLayoutManager as a Layout manager to display items horizontally or vertically.
  */
 class CoxRecyclerView : RecyclerView {
 
@@ -57,7 +57,7 @@ class CoxRecyclerView : RecyclerView {
     }
 
     /**
-     * Determines which layout manager to use for the calendar view based on its orientation.
+     * Determines which layout manager to use for the  view based on its orientation.
      */
     private fun setUpView() {
         when {

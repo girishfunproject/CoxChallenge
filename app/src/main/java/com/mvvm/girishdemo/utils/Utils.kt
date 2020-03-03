@@ -11,6 +11,9 @@ import javax.inject.Inject
 
 class Utils @Inject constructor(private val context: Context) {
 
+    /**
+     * To know if we are connected to the internet or not
+     */
     fun isConnectedToInternet(): Boolean {
         val connectivity = context.getSystemService(
             Context.CONNECTIVITY_SERVICE
@@ -26,6 +29,9 @@ class Utils @Inject constructor(private val context: Context) {
         return false
     }
 
+    /**
+     * To check for the flag in the shared preferences if the database is created or not
+     */
     fun isDataBaseCreated(): Boolean {
         val sharedPreference = context.getSharedPreferences("cox_prefs", Context.MODE_PRIVATE)
         return sharedPreference.getBoolean(Constants.IS_DATABASE_CREATED, false)
