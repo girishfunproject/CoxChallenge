@@ -1,6 +1,6 @@
 # Cox Code Challenge
 
-#Implementation Details:
+Implementation Details:
 
 Dependency Injection : Dagger
 
